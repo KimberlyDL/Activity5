@@ -1,0 +1,21 @@
+<div class="music-player d-flex flex-column" style="height: 100%; justify-content: flex-end;">
+    <!-- Bottom Section: Song Image, Song Info, and Audio Player (All placed at the bottom) -->
+    <div class="player-bottom d-flex flex-column align-items-center" style="width: 100%;">
+        <!-- Song Image -->
+        <img src="<%= image || '/img/default-song.jpg' %>" alt="Song image" class="img-fluid mb-3" style="width: 150px; height: 150px;">
+        
+        <!-- Current Song Info (Placed directly below the image) -->
+        <div class="text-center mb-3">
+            <h6 class="mb-0"><%= title || 'No song playing' %></h6>
+            <small><%= artist || 'Unknown artist' %></small>
+        </div>
+
+        <!-- Audio Player (Placed at the bottom) -->
+        <div class="audio-player" style="width: 100%;">
+            <audio controls style="width: 100%;">
+                <source src="<%= audioSrc || '/audio/default-song.mp3' %>" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        </div>
+    </div>
+</div>

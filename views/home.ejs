@@ -1,19 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MusicPlaylist</title>
-</head>
-<body>
-    <h1>Home</h1>
-    <br><hr><br>
-    <a href="/music/trending">Trending</a>
-    <br>
-    <a href="/music/favorites">Favorites</a>
-    <br>
-    <a href="/music/playlist">Playlists</a>
-    <br>
-    <a href="/music/artist">Artist</a>
-</body>
-</html>
+<%- include('partials/start') %>
+    <%- include('partials/nav') %>
+
+        <main>
+            <div class="container-fluid my-4 p-3">
+                <h3 class="mb-4">Recently Played </h3>
+                <div class="d-flex flex-nowrap overflow-auto" style="scroll-snap-type: x mandatory;">
+                    <div class="me-3">
+                        <%- include('partials/cards', { images: '/img/working-1.jpg' , lText: 'pop' , rText: '+' ,
+                            title: 'favorite1' , action: 'Play Now' }) %>
+                    </div>
+                    <div class="me-3">
+                        <%- include('partials/cards', { images: '/img/working-1.jpg' , lText: 'rnb' , rText: '+' ,
+                            title: 'favorite2' , action: 'Play Now' }) %>
+                    </div>
+                    <div class="me-3">
+                        <%- include('partials/cards', { images: '/img/working-1.jpg' , lText: 'reggae' , rText: '+' ,
+                            title: 'favorite3' , action: 'Play Now' }) %>
+                    </div>
+                    <div class="me-3">
+                        <%- include('partials/cards', { images: '/img/working-1.jpg' , lText: 'opm' , rText: '+' ,
+                            title: 'favorite4' , action: 'Play Now' }) %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container mt-5">
+                <h3 class="mb-4">My Playlist</h3>
+                <div class="list-group">
+                    <!-- Song Row -->
+                     <%- include('partials/song', {image: '', title: 'title', artist: 'artist', album: 'album'})%>
+                    <!-- Repeat more song rows as needed -->
+                </div>
+            </div>
+        </main>
+        <%- include('partials/end') %>

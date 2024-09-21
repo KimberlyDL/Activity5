@@ -1,0 +1,39 @@
+<div class="list-group-item d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center" style="flex-grow: 1;">
+        <!-- Song Image -->
+        <img src="<%= image || '/img/working-1.jpg' %>" alt="" class="img-fluid me-3"
+            style="width: 70px; height: 70px;">
+
+        <!-- Song Info -->
+        <div>
+            <h5 class="mb-1">
+                <%= title %>
+            </h5>
+            <p class="mb-0">
+                <%= artist %>
+            </p>
+        </div>
+    </div>
+
+    <!-- Album Info (Centered) -->
+    <div class="text-center mx-5">
+        <p class="mb-0">
+            <%= album %>
+        </p>
+    </div>
+
+    <!-- Icons -->
+    <div class="d-flex align-items-center">
+        <!-- Icons -->
+        <div class="d-flex align-items-center">
+            <!-- Heart Form to Add Song to Favorites -->
+            <form action="/favorites" method="POST">
+                <input type="hidden" name="title" value="">
+                <button type="submit" style="border: none; background: none;">
+                    <i class="fas fa-heart me-3" style="cursor: pointer; color: red;"></i> <!-- Heart Icon -->
+                </button>
+            </form>
+            <i class="fas fa-plus" style="cursor: pointer;"></i> <!-- Plus Icon -->
+        </div>
+    </div>
+</div>

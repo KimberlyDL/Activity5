@@ -1,18 +1,18 @@
 const musicControllers = {
     index: (req, res) => {
-        res.render('home');
+        res.render('home', {title: 'MusicPlaylist'});
     },
     trending: (req, res) => {
-        res.render('trending');
+        res.render('trending', {title: 'MusicPlaylist'});
     },
     favorites: (req, res) => {
-        res.render('favorites');
+        res.render('favorites', {title: 'MusicPlaylist'});
     },
     playlist: (req, res) => {
-        res.render('playlist');
+        res.render('playlist', {title: 'MusicPlaylist'});
     },
     artist: (req, res) => {
-        res.render('artist');
+        res.render('artist', {title: 'MusicPlaylist'});
     }
 };
 
