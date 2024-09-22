@@ -1,9 +1,26 @@
 <%- include('partials/start') %>
-    <%- include('partials/nav') %>
-        <h1>Playlist</h1>
-        <br>
-        <hr><br>
+<%- include('partials/nav') %>
 
-        s
+<div class="container-fluid" style="display: flex; height: 90vh;">
+    <!-- Section for the music player -->
+    <section style="width: 300px; padding: 20px;">
+        <%- include('partials/player', { image: '/img/services.jpg', title: 'Song Title', artist: 'Song Artist', audioSrc: '/audio/song-file.mp3' }) %>
+    </section>
 
-    <%- include('partials/end') %>
+    <!-- Main content area -->
+    <main style="flex-grow: 1; padding: 20px;">
+        <div class="container mt-5">
+            <h3 class="mb-4">Playlist</h3>
+            <div class="list-group">
+                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
+                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
+                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
+                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
+                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
+                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
+            </div>
+        </div>
+    </main>
+</div>
+
+<%- include('partials/end') %>

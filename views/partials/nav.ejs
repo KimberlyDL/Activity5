@@ -1,4 +1,4 @@
-<header id="header" class="header d-flex align-items-center fixed-top bg-dark">
+<header id="header" class="header d-flex align-items-center z-5 fixed-top bg-dark">
     <div class="container-fluid container-xl position-relative d-flex align-items-center justify-content-between">
 
       <a href="/" class="logo d-flex align-items-center">
@@ -9,13 +9,13 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="/" class="active">Home</a></li>
-          <li><a href="/music/trending">Trending</a></li>
-          <li><a href="/music/artist">Artists</a></li>
-          <li class="dropdown"><a><span>Profile</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+          <li><a href="/" class="<%= currentUrl === '/' ? 'active' : '' %>">Home</a></li>
+          <li><a href="/music/trending" class="<%= currentUrl === '/music/trending' ? 'active' : '' %>">Trending</a></li>
+          <li><a href="/music/artist" class="<%= currentUrl === '/music/artist' ? 'active' : '' %>">Artists</a></li>
+          <li class="dropdown"><a><span class="text-white">Profile</span><i class="bi bi-chevron-down text-white toggle-dropdown"></i></a>
             <ul>
-              <li><a href="/music/favorites">Favorites</a></li>
-              <li class="/music/playlist"><a><span>Playlist</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
+              <li><a href="/music/favorites" class="<%= currentUrl.startsWith('/music/playlist') ? 'active' : '' %>">Favorites</a></li>
+              <li href="/music/playlist " class="dropdown"><a class="<%= currentUrl.startsWith('/music/playlist') ? 'active' : '' %>"><span>Playlist</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
                 <ul>
                   <li><a href="#">Deep Dropdown 1</a></li>
                   <li><a href="#">Deep Dropdown 2</a></li>

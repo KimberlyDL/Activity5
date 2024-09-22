@@ -1,0 +1,46 @@
+<div class="card mb-3 song-card" data-id="<%= song.id %>" data-title="<%= song.title %>" data-artist="<%= song.artist %>" data-image="<%= song.image || '/img/working-1.jpg' %>">
+  <div class="row g-0 align-items-center">
+    <div class="col-md-1">
+      <div class="card-body">
+        <h5 class="card-title mb-1">
+          <%= rank %>
+        </h5>
+      </div>
+    </div>
+
+    <!-- Song Image -->
+    <div class="col-md-2 py-2">
+      <img src="<%= image || '/img/working-1.jpg' %>" alt="" class="img-fluid rounded-corners" style="width: 100px; height: 100px;">
+    </div>
+
+    <!-- Song Info -->
+    <div class="col-md-5 d-flex align-items-center">
+      <div class="card-body">
+        <h5 class="card-title mb-1">
+          <%= title %>
+        </h5>
+        <p class="card-text mb-0">
+          <%= artist %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Album Info (Centered) -->
+    <div class="col-md-2 text-center">
+      <p class="card-text mb-0">
+        <%= genre %>
+      </p>
+    </div>
+
+    <!-- Icons (Heart and Plus Icon) -->
+    <div class="col-md-2 d-flex align-items-center justify-content-center">
+      <form action="/favorites" method="POST" class="me-3">
+        <input type="hidden" name="title" value="<%= title %>">
+        <button type="submit" style="border: none; background: none;">
+          <i class="fas fa-heart" style="cursor: pointer; color: red;"></i> <!-- Heart Icon -->
+        </button>
+      </form>
+      <i class="fas fa-plus" style="cursor: pointer;"></i> <!-- Plus Icon -->
+    </div>
+  </div>
+</div>

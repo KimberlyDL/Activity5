@@ -1,0 +1,16 @@
+<div class="col-lg-3 col-md-6 d-flex align-items-stretch">
+    <div class="team-member">
+        <div class="member-img">
+            <img src="<%= profile_picture || '/img/default-song.jpg' %>" class="img-fluid" alt="">
+            <div class="social">
+                <a href="<%= twitter_handle || '' %>"><i class="bi bi-twitter-x"></i></a>
+                <a href="<%= instagram_handle || '' %>"><i class="bi bi-instagram"></i></a>
+                <a href="<%= tiktok_handle || '' %>"><i class="bi bi-tiktok"></i></a>
+            </div>
+        </div>
+        <div class="member-info">
+            <h4><%= name %></h4>
+            <span><%= album_count %> Albums</span>
+        </div>
+    </div>
+</div>
