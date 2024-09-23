@@ -1,52 +1,68 @@
 <%- include('partials/start') %>
-    <%- include('partials/nav') %>
+<%- include('partials/nav') %>
 
-        <main>
-            <!-- Team Section -->
-            <section id="team" class="team section">
+<main>
+  <!-- Artist Section -->
+  <section id="team" class="team section">
 
-                <!-- Section Title -->
-                <div class="container section-title">
-                    <h2>Team</h2>
-                    <p>Our Hardworking Team</p>
-                </div><!-- End Section Title -->
-                <div class="container">
-                    <div class="row gy-4">
-                        <% artists.forEach((artist)=> { %>
-                            <%- include('partials/artist_card', { name: artist.name, profile_picture:
+    <!-- Section Title -->
+    <div class="container section-title">
+      <h2>Tracks</h2>
+      <p>Meet the Aritsts</p>
+    </div><!-- End Section Title -->
+    <div class="container">
+      <div class="row gy-4">
+        <% artists.forEach((artist)=> { %>
+        <%- include('partials/artist_card', { name: artist.name, profile_picture:
                                 artist.profile_picture, twitter_handle: artist.twitter_handle, instagram_handle:
                                 artist.instagram_handle, tiktok_handle: artist.tiktok_handle, album_count:
                                 artist.album_count }) %>
-                                <% }); %>
-                    </div>
-                </div>
-            </section><!-- /Team Section -->
+        <% }); %>
+      </div>
+    </div>
+  </section><!-- /Artist Section -->
 
-            <div class="container-fluid my-4 p-3">
-                <h3 class="mb-4">Artist</h3>
-                <div class="d-flex flex-nowrap overflow-auto" style="scroll-snap-type: x mandatory;">
-                    <div class="me-3">
-                        <%- include('partials/circular_cards', { images: '/img/working-1.jpg' , name: 'name' }) %>
-                    </div>
-                    <div class="me-3">
-                        <%- include('partials/circular_cards', { images: '/img/working-1.jpg' , name: 'name' }) %>
-                    </div>
-                    <div class="me-3">
-                        <%- include('partials/circular_cards', { images: '/img/working-1.jpg' , name: 'name' }) %>
-                    </div>
-                    <div class="me-3">
-                        <%- include('partials/circular_cards', { images: '/img/working-1.jpg' , name: 'name' }) %>
-                    </div>
-                </div>
-            </div>
+  <!-- Team Section -->
+  <section id="team" class="team section">
 
-            <div class="container mt-5">
-                <h3 class="mb-4">My Playlist</h3>
-                <div class="list-group">
-                    <!-- Song Row -->
-                    <%- include('partials/song', {image: '' , title: 'title' , artist: 'artist' , album: 'album' })%>
-                        <!-- Repeat more song rows as needed -->
-                </div>
-            </div>
-        </main>
-        <%- include('partials/end') %>
+    <!-- Section Title -->
+    <div class="container section-title">
+      <h2>Hot!</h2>
+      <p>Meet the Rising Aritsts</p>
+    </div><!-- End Section Title -->
+
+    <div class="container-fluid my-4 p-3">
+      <div class="d-flex flex-nowrap overflow-auto" style="scroll-snap-type: x mandatory;">
+        <div class="me-3">
+          <%- include('partials/circular_cards', { images: '/img/songs/vampire.png' , name: 'Olivia' }) %>
+        </div>
+        <div class="me-3">
+          <%- include('partials/circular_cards', { images: '/img/songs/single.jpg' , name: 'Selena' }) %>
+        </div>
+        <div class="me-3">
+          <%- include('partials/circular_cards', { images: '/img/songs/usedtobeyoung.jpg' , name: 'Miley' }) %>
+        </div>
+        <div class="me-3">
+          <%- include('partials/circular_cards', { images: '/img/songs/red.jpg' , name: 'Doja' }) %>
+        </div>
+      </div>
+    </div>
+  </section><!-- /Team Section -->
+
+
+
+
+  <div class="container mt-5">
+    <h3 class="mb-4">My Playlist 1</h3>
+    <div class="list-group">
+      <!-- Song Row -->
+      <%- include('partials/song', {image: '' , title: 'Echo' , artist: 'artist' , album: 'album' })%>
+      <%- include('partials/song', {image: '' , title: 'Yellow' , artist: 'artist' , album: 'album' })%>
+      <%- include('partials/song', {image: '' , title: 'title' , artist: 'artist' , album: 'album' })%>
+      <%- include('partials/song', {image: '' , title: 'title' , artist: 'artist' , album: 'album' })%>
+      <!-- Repeat more song rows as needed -->
+    </div>
+  </div>
+</main>
+
+<%- include('partials/end') %>

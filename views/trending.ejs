@@ -1,84 +1,78 @@
 <%- include('partials/start') %>
-    <%- include('partials/nav') %>
+<%- include('partials/nav') %>
 
-        <div class="container-fluid" style="display: flex; height: 90vh;">
-            <!-- Section for the music player -->
-            <section style="width: 300px;">
-                <%- include('partials/song_player', { image: null, title: null, artist: null, audioSrc: null }) %>
-            </section>
+<div class="container-fluid" style="display: flex; height: 90vh;">
+  <!-- Section for the music player -->
+  <section style="width: 300px;">
+    <%- include('partials/song_player', { image: null, title: null, artist: null, audioSrc: null }) %>
+  </section>
 
-            <!-- Main content area -->
-            <main style="flex-grow: 1;">
-                <div class="container mt-5">
-                    <!-- Section Title -->
-                    <div class="container section-title">
-                        <h2>Trending</h2>
-                        <p>Top 100 Songs</p>
-                    </div><!-- End Section Title -->
-                    <div class="list-group" id="song-container">
-                        <% songs.forEach((song, index)=> { %>
-                            <%- include('partials/trending_song_card', { rank: index + 1, image: song.image, title:
+  <!-- Main content area -->
+  <main style="flex-grow: 1;">
+    <div class="container mt-5">
+      <!-- Section Title -->
+      <div class="container section-title">
+        <h2>Trending</h2>
+        <p>Top 100 Songs</p>
+      </div><!-- End Section Title -->
+      <div class="list-group" id="song-container">
+        <% songs.forEach((song, index)=> { %>
+        <%- include('partials/trending_song_card', { rank: index + 1, image: song.image, title:
                                 song.title, artist: song.artist, genre: song.genre || 'Unknown Genre' , id: song.id })
                                 %>
-                                <% }); %>
-                    </div>
-                </div>
-            </main>
-        </div>
+        <% }); %>
+      </div>
+    </div>
+  </main>
+</div>
 
-        <script>
-            // Track the current song index globally
-            let currentSongIndex = -1;
-            const audioPlayer = document.getElementById('audio-player');
+<script>
+  // Track the current song index globally
+  let currentSongIndex = -1;
+  const audioPlayer = document.getElementById('audio-player');
 
-            // Array to store songs dynamically
-            const songs = Array.from(document.querySelectorAll('.song-card')).map(songCard => ({
-                id: songCard.getAttribute('data-id'),
-                title: songCard.getAttribute('data-title'),
-                artist: songCard.getAttribute('data-artist'),
-                image: songCard.getAttribute('data-image')
-            }));
+  // store songs dynamically
+  const songs = Array.from(document.querySelectorAll('.song-card')).map(songCard => ({
+    id: songCard.getAttribute('data-id'),
+    title: songCard.getAttribute('data-title'),
+    artist: songCard.getAttribute('data-artist'),
+    image: songCard.getAttribute('data-image')
+  }));
 
-            // Add event listener to the parent container
-            document.getElementById('song-container').addEventListener('click', function (event) {
-                const songCard = event.target.closest('.song-card');
+  document.getElementById('song-container').addEventListener('click', function(event) {
+    const songCard = event.target.closest('.song-card');
 
-                if (songCard) {
-                    const trackId = songCard.getAttribute('data-id');
-                    const title = songCard.getAttribute('data-title');
-                    const artist = songCard.getAttribute('data-artist');
-                    const image = songCard.getAttribute('data-image');
+    if (songCard) {
+      const trackId = songCard.getAttribute('data-id');
+      const title = songCard.getAttribute('data-title');
+      const artist = songCard.getAttribute('data-artist');
+      const image = songCard.getAttribute('data-image');
 
-                    // Get the index of the current song in the songs array
-                    currentSongIndex = songs.findIndex(song => song.id === trackId);
+      currentSongIndex = songs.findIndex(song => song.id === trackId);
 
-                    playSong(trackId, title, artist, image);  // Play selected song
-                }
-            });
+      playSong(trackId, title, artist, image);
+    }
+  });
 
-            // Function to play the song
-            function playSong(trackId, title, artist, image) {
-                const audioSrc = `https://discoveryprovider.audius.co/v1/tracks/${trackId}/stream`;
+  function playSong(trackId, title, artist, image) {
+    const audioSrc = `https://discoveryprovider.audius.co/v1/tracks/${trackId}/stream`;
 
-                // Update the player with the new song details
-                document.getElementById('player-title').innerText = title;
-                document.getElementById('player-artist').innerText = artist;
-                document.getElementById('player-image').src = image;
-                document.getElementById('audio-player').src = audioSrc;
-                audioPlayer.play();
-            }
+    document.getElementById('player-title').innerText = title;
+    document.getElementById('player-artist').innerText = artist;
+    document.getElementById('player-image').src = image;
+    document.getElementById('audio-player').src = audioSrc;
+    audioPlayer.play();
+  }
 
-            // Function to play the next song in the list
-            function playNextSong() {
-                if (currentSongIndex >= 0 && currentSongIndex < songs.length - 1) {
-                    currentSongIndex++;
-                    const nextSong = songs[currentSongIndex];
-                    playSong(nextSong.id, nextSong.title, nextSong.artist, nextSong.image);
-                }
-            }
+  function playNextSong() {
+    if (currentSongIndex >= 0 && currentSongIndex < songs.length - 1) {
+      currentSongIndex++;
+      const nextSong = songs[currentSongIndex];
+      playSong(nextSong.id, nextSong.title, nextSong.artist, nextSong.image);
+    }
+  }
 
-            // Add event listener for when the song ends to play the next one
-            audioPlayer.addEventListener('ended', playNextSong);
-        </script>
+  audioPlayer.addEventListener('ended', playNextSong);
+</script>
 
-        <%- include('partials/end') %>
+<%- include('partials/end') %>
