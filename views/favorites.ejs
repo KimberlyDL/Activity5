@@ -1,26 +1,253 @@
 <%- include('partials/start') %>
-<%- include('partials/nav') %>
+  <%- include('partials/nav') %>
 
-<div class="container-fluid" style="display: flex; height: 90vh;">
-    <!-- Section for the music player -->
-    <section style="width: 300px; padding: 20px;">
-        <%- include('partials/player', { image: '/img/services.jpg', title: 'Song Title', artist: 'Song Artist', audioSrc: '/audio/song-file.mp3' }) %>
-    </section>
+    <div class="container-fluid" style="display: flex; height: 90vh;">
+      <!-- Section for the music player -->
+      <section style="width: 300px;">
+        <%- include('partials/song_player', { image: null, title: null, artist: null, audioSrc: null }) %>
+      </section>
 
-    <!-- Main content area -->
-    <main style="flex-grow: 1; padding: 20px;">
+      <!-- Main content area -->
+      <main style="flex-grow: 1;">
         <div class="container mt-5">
-            <h3 class="mb-4">Favorites</h3>
-            <div class="list-group">
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-            </div>
-        </div>
-    </main>
-</div>
+          <!-- Section Title -->
+          <div class="container section-title">
+            <h2>Favorites</h2>
+            <p>Feel the beat</p>
+          </div><!-- End Section Title -->
 
-<%- include('partials/end') %>
+          <% if (songs.length> 0) { %>
+            <div class="list-group" id="song-container">
+              <% songs.forEach((song, index)=> { %>
+                <%- include('partials/song_card', { index: index + 1, id: song.id, image: '/img/songs/red.jpg' , isFav:
+                  song.isFav, title: song.title, artist: song.artist, genre: song.genre || 'Unknown' , album: song.album
+                  || 'Unknown' , filepath: song.filepath }) %>
+                  <% }); %>
+            </div>
+            <% } else { %>
+              <div class="alert alert-warning text-center">
+                <%= message %>
+              </div>
+              <% } %>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      let queue = [];
+      let currentSongIndex = -1;
+      const audioPlayer = document.getElementById('audio-player');
+      const queueList = document.getElementById('queue-list').querySelector('ul');
+
+      // Store songs dynamically
+      const songs = Array.from(document.querySelectorAll('.song-card')).map(songCard => ({
+        index: songCard.getAttribute('data-index'),
+        id: songCard.getAttribute('data-id'),
+        title: songCard.getAttribute('data-title'),
+        artist: songCard.getAttribute('data-artist'),
+        image: songCard.getAttribute('data-image'),
+        filepath: songCard.getAttribute('data-filepath')
+      }));
+
+      // Event listener for clicking on a song card
+      document.getElementById('song-container').addEventListener('click', function (event) {
+        const songCard = event.target.closest('.song-card');
+
+        if (songCard) {
+          const index = songCard.getAttribute('data-index');
+          const id = songCard.getAttribute('data-id');
+          const title = songCard.getAttribute('data-title');
+          const artist = songCard.getAttribute('data-artist');
+          const image = songCard.getAttribute('data-image');
+          let filepath = songCard.getAttribute('data-filepath');
+
+          //currentSongIndex = songs.findIndex(song => song.index === songCard.getAttribute('data-index'));
+
+          //addToQueue(id, title, artist, filepath);
+
+          //playSong(filepath, title, artist, image);
+        }
+      });
+
+      function playSong(filepath, title, artist, image) {
+        document.getElementById('player-title').innerText = title;
+        document.getElementById('player-artist').innerText = artist;
+        document.getElementById('player-image').src = image;
+        document.getElementById('audio-player').src = filepath; // Use filepath to set the audio source
+        audioPlayer.play();
+      }
+
+      function addToQueue(id, title, artist, filepath) {
+        queue.push({ id, title, artist, filepath });
+        updateQueueDisplay();
+      }
+
+      // function updateQueueDisplay() {
+      //   queueList.innerHTML = ''; // Clear the current queue display
+
+      //   queue.forEach((song, index) => {
+      //     const li = document.createElement('li');
+      //     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+      //     li.innerHTML = `
+      //       <span>${song.title} - ${song.artist}</span>
+      //       <button class="btn btn-link p-0" onclick="playFromQueue(${index})">
+      //         <i class="fas fa-play text-primary"></i>
+      //       </button>`;
+      //     queueList.appendChild(li);
+      //   });
+      // }
+
+      function updateQueueDisplay() {
+        queueList.innerHTML = ''; // Clear the current queue display
+
+        queue.forEach((song, index) => {
+          const li = document.createElement('li');
+          li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+          li.innerHTML = `
+          <span>${song.title} - ${song.artist}</span>
+          <button class="btn btn-link p-0 play-icon" id="play-icon-${index}" onclick="playFromQueue(${index})">
+            <i class="fas fa-play text-primary"></i>
+          </button>`;
+          queueList.appendChild(li);
+        });
+
+        // If a song is currently playing, update its icon
+        if (currentSongIndex !== -1) {
+          updateCurrentSongIcon(currentSongIndex);
+        }
+      }
+
+      function updateCurrentSongIcon(index) {
+        document.querySelectorAll('.play-icon').forEach((icon) => {
+          icon.innerHTML = '<i class="fas fa-play text-primary"></i>';
+        });
+        const currentIcon = document.getElementById(`play-icon-${index}`);
+        currentIcon.innerHTML = '<i class="fas fa-spinner fa-spin text-primary"></i>';
+      }
+
+      function playFromQueue(index) {
+        const song = queue[index];
+        currentSongIndex = index;
+        playSong(song.filepath, song.title, song.artist, '/img/songs/icon.png');
+        updateCurrentSongIcon(index);
+      }
+
+      function playNextSong() {
+        if (currentSongIndex >= 0 && currentSongIndex < queue.length - 1) {
+          currentSongIndex++;
+          playFromQueue(currentSongIndex);
+        }
+      }
+
+      function playQueue() {
+        if (queue.length > 0) {
+          currentSongIndex = 0;
+          playFromQueue(currentSongIndex);
+        } else {
+          console.log('Queue is empty. Add songs to the queue to play.');
+        }
+      }
+
+      function clearQueue() {
+        queue = [];
+        updateQueueDisplay();
+        stopPlayer();
+      }
+
+      function stopPlayer() {
+        // Pause the audio player and reset it
+        audioPlayer.pause(); // Pause the player first
+        audioPlayer.currentTime = 0; // Reset the current time to 0
+
+        // Ensure the player is paused before clearing the source
+        setTimeout(() => {
+          // Clear the audio source to stop playback completely
+          document.getElementById('audio-player').src = '';
+
+          // Clear the song details
+          document.getElementById('player-title').innerText = '';
+          document.getElementById('player-artist').innerText = '';
+          document.getElementById('player-image').src = '/img/songs/icon.png';
+
+          // Reset the current song index
+          currentSongIndex = -1;
+
+          console.log("Audio player stopped");
+        }, 100); // Delay slightly to ensure the pause takes effect
+      }
+
+      audioPlayer.addEventListener('ended', playNextSong);
+
+      function addToFavorites(songId) {
+        fetch(`/music/${songId}/favorites`, {
+          method: 'POST'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Song added to favorites!');
+            location.reload();
+          })
+          .catch(error => console.error('Error:', error));
+      }
+
+      function removeFromFavorites(songId) {
+        fetch(`/music/${songId}/favorites`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Song has been removed to favorites!');
+            location.reload();
+          })
+          .catch(error => console.error('Error:', error));
+      }
+
+      function showPlaylistModal(songId) {
+        fetch(`/playlists`)
+          .then(response => response.json())
+          .then(data => {
+            const playlistList = document.getElementById('playlist-list');
+            playlistList.innerHTML = '';
+
+            data.playlists.forEach(playlist => {
+              const li = document.createElement('li');
+              li.classList.add('list-group-item');
+              li.innerHTML = `<a href="#" onclick="addToPlaylist('${songId}', '${playlist.id}')">${playlist.name}</a>`;
+              playlistList.appendChild(li);
+            });
+
+            var playlistModal = new bootstrap.Modal(document.getElementById('playlistModal'), {});
+            playlistModal.show();
+          })
+          .catch(error => console.error('Error:', error));
+      }
+
+      function addToPlaylist(songId, playlistId) {
+        fetch(`/playlists/${playlistId}/songs/${songId}`, {
+          method: 'POST'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Song added to playlist!');
+            location.reload();
+          })
+          .catch(error => console.error('Error:', error));
+      }
+
+      // Delete Song
+      function deleteSong(songId) {
+        if (confirm('Are you sure you want to delete this song?')) {
+          fetch(`/songs/${songId}`, {
+            method: 'DELETE'
+          })
+            .then(response => response.json())
+            .then(data => {
+              alert('Song deleted!');
+              location.reload(); // Refresh the page after deletion
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      }
+    </script>
+
+    <%- include('partials/end') %>

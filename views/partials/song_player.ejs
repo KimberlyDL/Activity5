@@ -1,12 +1,42 @@
-<aside class="music-player p-3 bg-light shadow-sm" style="position: fixed; bottom: 0; left: 0; height: 100vh; width: 300px;">
+<aside class="music-player p-3 bg-light shadow-sm"
+    style="position: fixed; bottom: 0; left: 0; height: 100vh; width: 300px;">
     <div class="d-flex flex-column align-items-center justify-content-end h-100">
+
+        <div class="d-flex flex-column align-items-center justify-self-start h-50 w-100">
+            <!-- Queue List -->
+            <div id="queue-list" class="w-100 mb-3"
+                style="overflow-y: auto; height: 60%; border-bottom: 1px solid #ccc;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h6 class="text-center">Queue</h6>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <button class="btn btn-link p-0" onclick="playQueue()">
+                            <i class="bi bi-play-fill" style="cursor: pointer;"></i>
+                        </button>
+                        <button class="btn btn-link p-0" onclick="clearQueue()">
+                            <i class="fas fa-trash text-secondary" style="cursor: pointer;"></i>
+                        </button>
+                    </div>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <!-- Queue items will be inserted here -->
+                </ul>
+            </div>
+        </div>
+
+
+
         <!-- Song Image -->
-        <img id="player-image" src="<%= image || '/img/default-song.jpg' %>" alt="Song image" class="img-fluid mb-3" style="width: 150px; height: 150px;">
-        
+        <img id="player-image" src="<%= image || '/img/songs/icon.png' %>" alt="" class="img-fluid mb-3"
+            style="width: 150px; height: 150px;">
+
         <!-- Current Song Info -->
         <div class="text-center mb-3">
-            <h6 id="player-title" class="mb-0"><%= title || 'No song playing' %></h6>
-            <small id="player-artist"><%= artist || 'Unknown artist' %></small>
+            <h6 id="player-title" class="mb-0">
+                <%= title || '' %>
+            </h6>
+            <small id="player-artist">
+                <%= artist || '' %>
+            </small>
         </div>
 
         <!-- Audio Player -->

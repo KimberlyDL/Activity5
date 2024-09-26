@@ -1,8 +1,10 @@
 const express = require('express');
 const axios = require('axios'); // Import axios
-
+const upload = require('../config/multer');  // Adjust the path as needed
 const router = express.Router();
 const musicController = require("../controller/MusicController");
+const songController = require("../controller/SongController");
+const playlistController = require("../controller/PlaylistController");
 
 const apiClient = axios.create({
     baseURL: 'https://api.audius.co',
@@ -55,9 +57,10 @@ const waitForAvailableHost = () => {
         checkHost();
     });
 };
+
+
 router.get('/', musicController.index);
-router.get('/music/trending', async (req, res) => {
-    
+router.get('/trending', async (req, res) => {
     try {
         const host = await waitForAvailableHost();
         console.log(host);
@@ -66,9 +69,21 @@ router.get('/music/trending', async (req, res) => {
         res.status(500).json({ error: 'Error occurred while fetching music' });
     }
 });
-router.get('/music/favorites', musicController.favorites);
-router.get('/music/playlist', musicController.playlist);
-router.get('/music/artist', async (req, res) => {
+router.get('/favorites', musicController.favorites);
+
+
+//playlist routescke=
+router.get('/playlist', playlistController.index);
+router.get('/playlist/json', playlistController.getjson);
+//router.get('/playlist/create', playlistController.create);
+router.post('/playlist/create', playlistController.post);
+router.get('/playlist/edit/:id', playlistController.edit);
+router.get('/playlist/:id', playlistController.show);
+router.post('/playlist/edit/:id', playlistController.patch);
+router.get('/playlists/:playlist_id/songs/:song_id', playlistController.addToPlaylist);
+router.delete('/playlist/delete/:id', playlistController.delete);
+
+router.get('/artist', async (req, res) => {
     try {
         const host = await waitForAvailableHost();
         musicController.artist(req, res, apiClient, host)
@@ -77,5 +92,17 @@ router.get('/music/artist', async (req, res) => {
     }
 });
 router.get('/artists/:id/songs', musicController.getArtistSongs);
+
+
+router.get('/music/local', songController.index);
+router.get('/music/local/favorites', songController.getFavAll);
+router.get('/music/local/upload', songController.create);
+router.post('/music/local/upload', upload.single('song'), songController.post);
+router.delete('/music/local/remove/:id', songController.delete);
+router.get('/music/:id', songController.show);
+
+router.post('/music/:id/favorites', songController.setFav);
+router.delete('/music/:id/favorites', songController.unsetFav);
+
 
 module.exports = router;

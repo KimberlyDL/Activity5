@@ -1,0 +1,80 @@
+<%- include('partials/start') %>
+<%- include('partials/nav') %>
+
+<div class="container-fluid" style="display: flex; height: 90vh;">
+  <!-- Section for the music player -->
+  <section style="width: 300px;">
+    <%- include('partials/song_player', { image: null, title: null, artist: null, audioSrc: null }) %>
+  </section>
+
+  <!-- Main content area -->
+  <main style="flex-grow: 1;">
+    <div class="container mt-5">
+      <!-- Section Title -->
+      <div class="container section-title">
+        <!-- <h2>Local</h2> -->
+        <p>Local Songs</p>
+      </div><!-- End Section Title -->
+      <div class="list-group" id="song-container">
+        <% playlists['Songs'].forEach((song, index)=> { %>
+        <%- include('partials/playlist_card', {index: song.index, image: song.image, title:
+                                song.title, artist: song.artist, album: song.album, id: song.id, filepath = song.filepath })
+                                %>
+        <% }); %>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  // Track the current song index globally
+  let currentSongIndex = -1;
+  const audioPlayer = document.getElementById('audio-player');
+
+  // store songs dynamically
+  const songs = Array.from(document.querySelectorAll('.song-card')).map(songCard => ({
+    id: songCard.getAttribute('data-id'),
+    title: songCard.getAttribute('data-title'),
+    artist: songCard.getAttribute('data-artist'),
+    image: songCard.getAttribute('data-image'),
+    filepath: songCard.getAttribute('data-filepath')
+  }));
+
+  document.getElementById('song-container').addEventListener('click', function(event) {
+    const songCard = event.target.closest('.song-card');
+
+    if (songCard) {
+      const trackId = songCard.getAttribute('data-id');
+      const title = songCard.getAttribute('data-title');
+      const artist = songCard.getAttribute('data-artist');
+      const image = songCard.getAttribute('data-image');
+
+
+      currentSongIndex = songs.findIndex(song => song.id === trackId);
+
+      playSong(filepath, title, artist, image);
+    }
+  });
+
+  function playSong(filepath, title, artist, image) {
+    const audioSrc = filepath;
+
+    document.getElementById('player-title').innerText = title;
+    document.getElementById('player-artist').innerText = artist;
+    document.getElementById('player-image').src = image;
+    document.getElementById('audio-player').src = audioSrc;
+    audioPlayer.play();
+  }
+
+  function playNextSong() {
+    if (currentSongIndex >= 0 && currentSongIndex < songs.length - 1) {
+      currentSongIndex++;
+      const nextSong = songs[currentSongIndex];
+      playSong(nextSong.id, nextSong.title, nextSong.artist, nextSong.image);
+    }
+  }
+
+  audioPlayer.addEventListener('ended', playNextSong);
+</script>
+
+<%- include('partials/end') %>

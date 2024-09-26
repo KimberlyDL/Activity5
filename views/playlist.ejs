@@ -1,26 +1,174 @@
 <%- include('partials/start') %>
-<%- include('partials/nav') %>
+  <%- include('partials/nav') %>
 
-<div class="container-fluid" style="display: flex; height: 90vh;">
-    <!-- Section for the music player -->
-    <section style="width: 300px; padding: 20px;">
-        <%- include('partials/player', { image: '/img/services.jpg', title: 'Song Title', artist: 'Song Artist', audioSrc: '/audio/song-file.mp3' }) %>
-    </section>
+    <main>
+      <!-- Artist Section -->
+      <section id="team" class="team section">
 
-    <!-- Main content area -->
-    <main style="flex-grow: 1; padding: 20px;">
-        <div class="container mt-5">
-            <h3 class="mb-4">Playlist</h3>
-            <div class="list-group">
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-                <%- include('partials/song', { image: '/img/services.jpg', title: 'title', artist: 'artist', album: 'album' }) %>
-            </div>
+        <div class="d-flex align-items-center justify-content-between p-5">
+          <!-- Section Title -->
+          <div class="container section-title px-5">
+            <h2>Playlist</h2>
+            <p>Lift up your mood</p>
+          </div><!-- End Section Title -->
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPlaylistModal">
+            Create New Playlist
+          </button>
         </div>
-    </main>
-</div>
 
-<%- include('partials/end') %>
+        <!-- Modal for creating a new playlist -->
+        <div class="modal fade" id="createPlaylistModal" tabindex="-1" role="dialog"
+          aria-labelledby="createPlaylistModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header d-flex align-items-center justify-content-between">
+                <h5 class="modal-title fs-5" id="createPlaylistModalLabel">Create New Playlist</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form action="/playlist/create" method="POST">
+                  <!-- Playlist Name -->
+                  <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" class="form-control" name="name" id="name" required>
+                  </div>
+
+                  <!-- Playlist Description -->
+                  <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea class="form-control" name="description" id="description" rows="3" required></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Create Playlist</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Playlist Modal -->
+        <div class="modal fade" id="editPlaylistModal" tabindex="-1" aria-labelledby="editPlaylistModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="editPlaylistModalLabel">Edit Playlist</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form id="editPlaylistForm" method="POST">
+                  <!-- Hidden input for the playlist ID -->
+                  <input type="hidden" name="id" id="edit-playlist-id">
+
+                  <!-- Playlist Title -->
+                  <div class="form-group">
+                    <label for="edit-title">Title:</label>
+                    <input type="text" class="form-control" name="title" id="edit-title" required>
+                  </div>
+
+                  <!-- Playlist Description -->
+                  <div class="form-group">
+                    <label for="edit-description">Description:</label>
+                    <textarea class="form-control" name="description" id="edit-description" rows="3"
+                      required></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Blog Posts Section -->
+        <section id="blog-posts" class="blog-posts section px-5">
+          <div class="container">
+            <div class="row gy-4">
+              <% if (message) { %>
+                <p>
+                  <%= message %>
+                </p>
+                <% } else { %>
+                  <% playlists.forEach((playlist)=> { %>
+                    <%- include('partials/playlist_card', { id: playlist.id, name: playlist.name, image:playlist.image,
+                      description: playlist.description })%>
+                      <% }); %>
+                        <% } %>
+            </div>
+          </div>
+
+        </section><!-- /Blog Posts Section -->
+
+      </section><!-- /Artist Section -->
+
+    </main>
+
+    <script>
+      function editPlaylist(playlistId) {
+        // Find the playlist element by ID
+        const playlistElement = document.querySelector(`[data-id='${playlistId}']`);
+
+        // Extract the playlist data from the element
+        const playlistTitle = playlistElement.getAttribute('data-title');
+        const playlistDescription = playlistElement.getAttribute('data-artist'); // Assuming 'description' is stored in 'artist' field
+
+        // Populate the modal's input fields
+        document.getElementById('edit-playlist-id').value = playlistId;
+        document.getElementById('edit-title').value = playlistTitle;
+        document.getElementById('edit-description').value = playlistDescription;
+
+        // Update the form action dynamically with the playlist ID
+        const form = document.getElementById('editPlaylistForm');
+        form.action = `/playlist/edit/${playlistId}`; // Set the action URL dynamically
+
+        // Show the modal
+        var editModal = new bootstrap.Modal(document.getElementById('editPlaylistModal'));
+        editModal.show();
+      }
+
+      function deletePlaylist(playlistId) {
+        // Show a confirmation dialog
+        if (confirm('Are you sure you want to delete this playlist?')) {
+          // Send a DELETE request to the server
+          fetch(`/playlist/delete/${playlistId}`, {
+            method
+              : 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.message) {
+                alert(data.message);
+                // Optionally, remove the playlist element from the page
+                document.querySelector(`[data-id='${playlistId}']`).remove();
+              } else {
+                alert('Error: ' + data.error);
+              }
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              alert('An error occurred while deleting the playlist.');
+            });
+        }
+      }
+    </script>
+
+    <!-- Vendor JS Files -->
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/php-email-form/validate.js"></script>
+    <script src="/vendor/aos/aos.js"></script>
+    <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Main JS File -->
+    <script src="/js/main.js"></script>
+
+    <%- include('partials/end') %>

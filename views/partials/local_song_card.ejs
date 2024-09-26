@@ -1,0 +1,51 @@
+<div class="card mb-3 song-card" 
+    data-id="<%= id %>" 
+    data-title="<%= title %>" 
+    data-artist="<%= artist %>" 
+    data-image="<%= image %>">
+    data-filename="<%= filename %>">
+  <div class="row g-0 align-items-center">
+    <!-- Rank on the left -->
+    <div class="col-md-1 text-center">
+      <div class="card-body">
+        <h5 class="card-title mb-1"><%= album %></h5>
+      </div>
+    </div>
+
+    <!-- Song Image -->
+    <div class="col-md-2 py-2">
+      <img src="<%= image || '/img/song/red.jpg' %>" alt="" class="img-fluid rounded-corners" style="width: 100px; height: 100px;">
+    </div>
+
+    <!-- Song Info -->
+    <div class="col-md-5 d-flex align-items-center">
+      <div class="card-body">
+        <h5 class="card-title mb-1"><%= title %></h5>
+        <p class="card-text mb-0"><%= artist %></p>
+      </div>
+    </div>
+
+    <!-- Genre Info -->
+    <div class="col-md-2 text-center">
+      <p class="card-text mb-0"><%= genre %></p>
+    </div>
+
+    <!-- Icons (Heart and Plus Icon) -->
+    <div class="col-md-2 d-flex align-items-center justify-content-center">
+      <!-- Favorite Icon -->
+      <button class="btn btn-link p-0" onclick="addToFavorites('<%= id %>')">
+        <i class="bi bi-suit-heart text-danger" style="cursor: pointer;"></i>
+      </button>
+
+      <!-- Add to Playlist Icon -->
+      <button class="btn btn-link p-0 ms-3" onclick="showPlaylistModal('<%= id %>')">
+        <i class="bi bi-pencil text-primary" style="cursor: pointer;"></i>
+      </button>
+
+      <!-- Delete Song Icon -->
+      <button class="btn btn-link p-0 ms-3" onclick="deleteSong('<%= id %>')">
+        <i class="bi bi-x-circle text-secondary" style="cursor: pointer;"></i>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<section id="team" class="team section">
+
+  <div class="container section-title">
+    <h2>Create New Playlist</h2>
+    <p>Fill out the details for your new playlist</p>
+  </div>
+
+  <form action="/playlist/create" method="POST" enctype="multipart/form-data">
+    <!-- Playlist Name -->
+    <label for="name">Name:</label>
+    <input type="text" name="name" id="name" required><br><br>
+
+    <!-- Playlist Description -->
+    <label for="description">Description:</label>
+    <textarea name="description" id="description" rows="3" required></textarea><br><br>
+
+    <button type="submit">Create Playlist</button>
+  </form>
+
+</section>

@@ -1,0 +1,74 @@
+<div class="card mb-3 song-card" data-index="<%= index %>" data-id="<%= id %>" data-title="<%= title %>"
+  data-artist="<%= artist %>" data-image="<%= image || '/img/songs/red.jpg' %>" data-filepath="<%= filepath %>">
+
+  <div class="row g-0 align-items-center justify-content-center px-3">
+    <!-- Song Image -->
+    <div class="col-md-1 py-2 rounded-corners">
+      <img src="<%= image || '/img/songs/red.jpg' %>" alt="<%= title %>" class="img-fluid rounded-circle"
+        style="width: 70px; height: 70px;">
+    </div>
+
+    <!-- Song Info -->
+    <div class="col-md-3 d-flex align-items-center">
+      <div class="card-body">
+        <h5 class="card-title mb-1">
+          <%= title %>
+        </h5>
+        <p class="card-text mb-0">
+          <%= artist %>
+        </p>
+      </div>
+    </div>
+
+    <!-- Genre Info -->
+    <div class="col-md-2 d-flex flex-column align-items-center">
+      <p class="card-text mb-0">
+        Genre: <%= genre %>
+      </p>
+    </div>
+
+    <!-- Album Info -->
+    <div class="col-md-2 d-flex flex-column align-items-center">
+      <p class="card-text mb-0">
+        Album: <%= album %>
+      </p>
+    </div>
+
+    <!-- Icons (Favorite, Playlist, Delete) -->
+    <div class="col-md-3 d-flex align-items-center justify-content-end">
+      <!-- Favorite Icon -->
+      <div class="me-3">
+        <% if (isFav) { %>
+          <button class="btn btn-link p-0" onclick="removeFromFavorites('<%= id %>')">
+            <i class="bi bi-suit-heart-fill" style="cursor: pointer;"></i>
+          </button>
+          <% } else { %>
+            <button class="btn btn-link p-0" onclick="addToFavorites('<%= id %>')">
+              <i class="bi bi-suit-heart" style="cursor: pointer;"></i>
+            </button>
+            <% } %>
+      </div>
+
+
+
+      <!-- Add to Playlist Icon -->
+      <button class="btn btn-link p-0 me-3" onclick="addtoPlaylist('<%= id %>')">
+        <i class="fas fa-plus text-primary" style="cursor: pointer;"></i>
+      </button>
+
+
+
+
+      <!-- Add to Queue Icon -->
+      <button class="btn btn-link p-0 me-3"
+        onclick="addToQueue('<%= id %>', '<%= title %>', '<%= artist %>', '<%= filepath %>')">
+        <i class="fas fa-list text-success" style="cursor: pointer;"></i>
+      </button>
+
+      <!-- Delete Song Icon -->
+      <button class="btn btn-link p-0" onclick="deleteSong('<%= id %>')">
+        <i class="fas fa-trash text-secondary" style="cursor: pointer;"></i>
+      </button>
+    </div>
+  </div>
+</div>

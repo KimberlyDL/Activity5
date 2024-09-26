@@ -1,0 +1,41 @@
+<div class="col-lg-4" 
+data-id="<%= id %>" 
+data-title="<%= name %>"
+data-artist="<%= description %>" 
+data-image="<%= image || '/img/songs/red.jpg' %>" 
+>
+  <article>
+
+    <div class="post-img">
+      <img src="<%= image || '/img/songs/red.jpg' %>" alt="" class="img-fluid">
+    </div>
+
+    <p class="post-category">
+      <%= name%>
+    </p>
+
+    <h2 class="title">
+      <a href="/playlist/<%= id %>">
+        <%= description %>
+      </a>
+    </h2>
+
+    <div class="d-flex align-items-center">
+      <!-- Favorite Icon -->
+      <button class="btn btn-link p-0" onclick="playPlaylist('<%= id %>')">
+        <i class="bi bi-suit-heart text-danger" style="cursor: pointer;"></i>
+      </button>
+
+      <!-- Add to Playlist Icon -->
+      <button class="btn btn-link p-0 ms-3" onclick="editPlaylist('<%= id %>')">
+        <i class="bi bi-pencil text-primary" style="cursor: pointer;"></i>
+      </button>
+
+      <!-- Delete Song Icon -->
+      <button class="btn btn-link p-0 ms-3" onclick="deletePlaylist('<%= id %>')">
+        <i class="bi bi-x-circle text-secondary" style="cursor: pointer;"></i>
+      </button>
+    </div>
+
+  </article>
+</div>
