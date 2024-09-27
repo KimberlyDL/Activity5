@@ -2,12 +2,12 @@
 data-id="<%= id %>" 
 data-title="<%= name %>"
 data-artist="<%= description %>" 
-data-image="<%= image || '/img/songs/red.jpg' %>" 
+data-image="<%- image || '/img/songs/red.jpg' %>" 
 >
   <article>
 
     <div class="post-img">
-      <img src="<%= image || '/img/songs/red.jpg' %>" alt="" class="img-fluid">
+      <img src="<%- image || '/img/songs/red.jpg' %>" alt="" class="img-fluid">
     </div>
 
     <p class="post-category">
@@ -22,9 +22,10 @@ data-image="<%= image || '/img/songs/red.jpg' %>"
 
     <div class="d-flex align-items-center">
       <!-- Favorite Icon -->
-      <button class="btn btn-link p-0" onclick="playPlaylist('<%= id %>')">
+
+      <a href="/playlist/<%= id %>" class="btn btn-link p-0">
         <i class="bi bi-suit-heart text-danger" style="cursor: pointer;"></i>
-      </button>
+      </a>
 
       <!-- Add to Playlist Icon -->
       <button class="btn btn-link p-0 ms-3" onclick="editPlaylist('<%= id %>')">

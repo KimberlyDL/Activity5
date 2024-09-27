@@ -1,80 +1,251 @@
 <%- include('partials/start') %>
-<%- include('partials/nav') %>
+  <%- include('partials/nav') %>
 
-<div class="container-fluid" style="display: flex; height: 90vh;">
-  <!-- Section for the music player -->
-  <section style="width: 300px;">
-    <%- include('partials/song_player', { image: null, title: null, artist: null, audioSrc: null }) %>
-  </section>
+    <div class="container-fluid" style="display: flex; height: 90vh;">
+      <!-- Section for the music player -->
+      <section style="width: 300px;">
+        <%- include('partials/song_player', { image: null, title: null, artist: null, audioSrc: null }) %>
+      </section>
 
-  <!-- Main content area -->
-  <main style="flex-grow: 1;">
-    <div class="container mt-5">
-      <!-- Section Title -->
-      <div class="container section-title">
-        <!-- <h2>Local</h2> -->
-        <p>Local Songs</p>
-      </div><!-- End Section Title -->
-      <div class="list-group" id="song-container">
-        <% playlists['Songs'].forEach((song, index)=> { %>
-        <%- include('partials/playlist_card', {index: song.index, image: song.image, title:
-                                song.title, artist: song.artist, album: song.album, id: song.id, filepath = song.filepath })
-                                %>
-        <% }); %>
-      </div>
+      <!-- Main content area -->
+      <main style="flex-grow: 1;">
+        <div class="container mt-5">
+          <!-- Section Title -->
+          <div class="container section-title">
+            <!-- <h2>Local</h2> -->
+            <p>Local Songs</p>
+          </div><!-- End Section Title -->
+          <div class="list-group" id="song-container">
+            <% playlists['Songs'].forEach((song, index)=> { %>
+              <%- include('partials/song_card', { index: index + 1, id: song.id, image: '/img/songs/red.jpg' , isFav:
+                song.isFav, title: song.title, artist: song.artist, genre: song.genre || 'Unknown' , album: song.album
+                || 'Unknown' , filepath: song.filepath }); %>
+                <% }); %>
+          </div>
+        </div>
+      </main>
     </div>
-  </main>
-</div>
 
-<script>
-  // Track the current song index globally
-  let currentSongIndex = -1;
-  const audioPlayer = document.getElementById('audio-player');
+    <script>
+      let queue = [];
+      let currentSongIndex = -1;
+      const audioPlayer = document.getElementById('audio-player');
+      const queueList = document.getElementById('queue-list').querySelector('ul');
 
-  // store songs dynamically
-  const songs = Array.from(document.querySelectorAll('.song-card')).map(songCard => ({
-    id: songCard.getAttribute('data-id'),
-    title: songCard.getAttribute('data-title'),
-    artist: songCard.getAttribute('data-artist'),
-    image: songCard.getAttribute('data-image'),
-    filepath: songCard.getAttribute('data-filepath')
-  }));
+      const songs = Array.from(document.querySelectorAll('.song-card')).map(songCard => ({
+        index: songCard.getAttribute('data-index'),
+        id: songCard.getAttribute('data-id'),
+        title: songCard.getAttribute('data-title'),
+        artist: songCard.getAttribute('data-artist'),
+        image: songCard.getAttribute('data-image'),
+        filepath: songCard.getAttribute('data-filepath')
+      }));
 
-  document.getElementById('song-container').addEventListener('click', function(event) {
-    const songCard = event.target.closest('.song-card');
+      document.getElementById('song-container').addEventListener('click', function (event) {
+        const songCard = event.target.closest('.song-card');
 
-    if (songCard) {
-      const trackId = songCard.getAttribute('data-id');
-      const title = songCard.getAttribute('data-title');
-      const artist = songCard.getAttribute('data-artist');
-      const image = songCard.getAttribute('data-image');
+        if (songCard) {
+          const index = songCard.getAttribute('data-index');
+          const id = songCard.getAttribute('data-id');
+          const title = songCard.getAttribute('data-title');
+          const artist = songCard.getAttribute('data-artist');
+          const image = songCard.getAttribute('data-image');
+          let filepath = songCard.getAttribute('data-filepath');
+
+          //currentSongIndex = songs.findIndex(song => song.index === songCard.getAttribute('data-index'));
+
+          //addToQueue(id, title, artist, filepath);
+
+          //playSong(filepath, title, artist, image);
+        }
+      });
+
+      function playSong(filepath, title, artist, image) {
+        document.getElementById('player-title').innerText = title;
+        document.getElementById('player-artist').innerText = artist;
+        document.getElementById('player-image').src = image;
+        document.getElementById('audio-player').src = filepath;
+        audioPlayer.play();
+      }
+
+      function addToQueue(id, title, artist, filepath) {
+        queue.push({ id, title, artist, filepath });
+        updateQueueDisplay();
+      }
+
+      function updateQueueDisplay() {
+        queueList.innerHTML = '';
+
+        queue.forEach((song, index) => {
+          const li = document.createElement('li');
+          li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+          li.innerHTML = `
+        <span>${song.title} - ${song.artist}</span>
+        <button class="btn btn-link p-0 play-icon" id="play-icon-${index}" onclick="playFromQueue(${index})">
+          <i class="fas fa-play text-primary"></i>
+        </button>`;
+          queueList.appendChild(li);
+        });
+
+        // If a song is currently playing, update its icon
+        if (currentSongIndex !== -1) {
+          updateCurrentSongIcon(currentSongIndex);
+        }
+      }
+
+      function updateCurrentSongIcon(index) {
+        document.querySelectorAll('.play-icon').forEach((icon) => {
+          icon.innerHTML = '<i class="fas fa-play text-primary"></i>';
+        });
+        const currentIcon = document.getElementById(`play-icon-${index}`);
+        currentIcon.innerHTML = '<i class="fas fa-spinner fa-spin text-primary"></i>';
+      }
+
+      function playFromQueue(index) {
+        const song = queue[index];
+        currentSongIndex = index;
+        playSong(song.filepath, song.title, song.artist, '/img/songs/icon.png');
+        updateCurrentSongIcon(index);
+      }
+
+      function playNextSong() {
+        if (currentSongIndex >= 0 && currentSongIndex < queue.length - 1) {
+          currentSongIndex++;
+          playFromQueue(currentSongIndex);
+        }
+      }
+
+      function playQueue() {
+        if (queue.length > 0) {
+          currentSongIndex = 0;
+          playFromQueue(currentSongIndex);
+        } else {
+          console.log('Queue is empty. Add songs to the queue to play.');
+        }
+      }
+
+      function clearQueue() {
+        queue = [];
+        updateQueueDisplay();
+        stopPlayer();
+      }
+
+      function stopPlayer() {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
 
 
-      currentSongIndex = songs.findIndex(song => song.id === trackId);
+        setTimeout(() => {
+          document.getElementById('audio-player').src = '';
+          document.getElementById('player-title').innerText = '';
+          document.getElementById('player-artist').innerText = '';
+          document.getElementById('player-image').src = '/img/songs/icon.png';
+          currentSongIndex = -1;
 
-      playSong(filepath, title, artist, image);
-    }
-  });
+          console.log("Audio player stopped");
+        }, 100);
+      }
 
-  function playSong(filepath, title, artist, image) {
-    const audioSrc = filepath;
+      audioPlayer.addEventListener('ended', playNextSong);
 
-    document.getElementById('player-title').innerText = title;
-    document.getElementById('player-artist').innerText = artist;
-    document.getElementById('player-image').src = image;
-    document.getElementById('audio-player').src = audioSrc;
-    audioPlayer.play();
-  }
+      function addToFavorites(songId) {
+        fetch(`/music/${songId}/favorites`, {
+          method: 'POST'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Song added to favorites!');
+            location.reload();
+          })
+          .catch(error => console.error('Error:', error));
+      }
 
-  function playNextSong() {
-    if (currentSongIndex >= 0 && currentSongIndex < songs.length - 1) {
-      currentSongIndex++;
-      const nextSong = songs[currentSongIndex];
-      playSong(nextSong.id, nextSong.title, nextSong.artist, nextSong.image);
-    }
-  }
+      function removeFromFavorites(songId) {
+        fetch(`/music/${songId}/favorites`, {
+          method: 'DELETE'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Song has been removed to favorites!');
+            location.reload();
+          })
+          .catch(error => console.error('Error:', error));
+      }
 
-  audioPlayer.addEventListener('ended', playNextSong);
-</script>
 
-<%- include('partials/end') %>
+      function addtoPlaylist(songId) {
+        console.log('addtoPlaylist triggered for song:', songId);
+
+        // Fetch the existing playlists
+        fetch(`/playlist/json`)
+          .then(response => response.json())
+          .then(data => {
+            const playlistList = document.getElementById('playlist-list');
+            playlistList.innerHTML = ''; // Clear any existing list items
+
+            // Populate the playlist list
+            data.playlists.forEach(playlist => {
+              const li = document.createElement('li');
+              li.classList.add('list-group-item');
+              li.innerHTML = `
+      <a href="/playlists/${playlist.id}/songs/${songId}">
+        ${playlist.name}
+      </a>`;
+              playlistList.appendChild(li);
+            });
+
+            // Show the modal
+            const playlistModal = new bootstrap.Modal(document.getElementById('playlistModal'), {});
+            playlistModal.show();
+          })
+          .catch(error => console.error('Error fetching playlists:', error));
+      }
+
+
+      // Function to handle adding a song to a playlist
+      function addSongToPlaylist(songId, playlistId) {
+
+        console.log(playlistId);
+        fetch(`/playlists/${playlistId}/songs/${songId}`, {
+          method: 'POST'
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert('Song added to playlist!');
+            location.reload();
+          })
+          .catch(error => console.error('Error adding song to playlist:', error));
+      }
+
+
+      // Delete Song
+      function deleteSong(songId) {
+        if (confirm('Are you sure you want to delete this song?')) {
+          fetch(`/music/local/remove/${songId}`, {
+            method: 'DELETE'
+          })
+            .then(response => response.json())
+            .then(data => {
+              alert('Song deleted!');
+              location.reload(); // Refresh the page after deletion
+            })
+            .catch(error => console.error('Error:', error));
+        }
+      }
+    </script>
+
+
+
+    <!-- Vendor JS Files -->
+    <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/vendor/php-email-form/validate.js"></script>
+    <script src="/vendor/aos/aos.js"></script>
+    <script src="/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+    <script src="/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+    <script src="/vendor/swiper/swiper-bundle.min.js"></script>
+
+    <!-- Main JS File -->
+    <script src="/js/main.js"></script>
+
+    <%- include('partials/end') %>

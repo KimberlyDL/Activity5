@@ -5,14 +5,15 @@ const { addToPlaylist } = require('./SongController');
 const playlistController = {
     index: async (req, res) => {
         try {
-            // Fetch playlists and include their associated songs
+            // Fetch all playlists and include associated songs
             const playlists = await Playlist.findAll({
                 include: {
                     model: Song,
-                    through: { attributes: [] }, // Exclude join table attributes
+                    as: 'Songs',  // Use the alias defined in the Playlist model
+                    through: { attributes: [] }  // Exclude join table attributes
                 }
             });
-
+    
             // If no playlists exist, handle the empty state
             if (!playlists || playlists.length === 0) {
                 return res.render('playlist', {
@@ -22,7 +23,7 @@ const playlistController = {
                     message: 'No playlists available yet.'  // Display a message to the user
                 });
             }
-
+    
             // Encrypt playlist IDs
             const encryptedPlaylists = playlists.map(playlist => {
                 return {
@@ -31,7 +32,7 @@ const playlistController = {
                     songs: playlist.Songs  // Include songs in the playlist
                 };
             });
-
+    
             // Render the playlists page
             res.render('playlist', {
                 title: 'MusicPlaylist',
@@ -39,7 +40,7 @@ const playlistController = {
                 playlists: encryptedPlaylists,
                 message: null  // No message, playlists exist
             });
-
+    
         } catch (error) {
             console.error('Error fetching playlists:', error);
             return res.status(500).json({ error: 'An error occurred while fetching playlists.' });
@@ -176,27 +177,28 @@ const playlistController = {
     show: async (req, res) => {
         try {
             const encryptedId = req.params.id;
+
             const playlistId = decrypt(encryptedId);
     
-            // Fetch the playlist along with associated songs
+            console.log(playlistId);
+
             const playlist = await Playlist.findOne({
                 where: { id: playlistId },
                 include: [{
                     model: Song,
-                    as: 'Songs'  // Use the alias defined in the Playlist model
+                    as: 'Songs'
                 }]
             });
     
-            // If playlist not found
             if (!playlist) {
                 return res.status(404).json({ message: 'Playlist not found' });
             }
-    
-            // Render the playlist and its songs
+            
+            console.log(playlist);
             res.render('playlistSongs', { 
                 title: 'MusicPlaylist',
                 currentUrl: req.url,
-                playlist,  // Pass the playlist with its songs
+                playlists: playlist  // Pass the playlist with its songs
             });
         } catch (error) {
             console.error('Error fetching playlist:', error);
